@@ -1,3 +1,5 @@
+"use strict";
+
 class Ship extends Sprite {
 	constructor(imgsrc, x, y, acceleration) {
 		super(imgsrc, x, y);
@@ -34,6 +36,12 @@ class Ship extends Sprite {
 			this.xVel = -this.maxSpeed;
 		if (this.yVel < -this.maxSpeed)
 			this.yVel = -this.maxSpeed;
+
+		// Bounce off screen border (temporary)
+		if (this.x + this.image.width >= window.innerWidth || this.x <= 0)
+			this.xVel = -this.xVel;
+		if (this.y + this.image.height >= window.innerHeight || this.y <= 0)
+			this.yVel = -this.yVel;
 
 		// Movement
 		this.x += this.xVel; 
@@ -86,7 +94,7 @@ class Ship extends Sprite {
 				this.x+this.image.width/2,
 				this.y+this.image.height/2,
 				this.angle,
-				this.acceleration+400
+				this.acceleration+500
 			);
 			this.cooldown = 20;
 		} else if (this.cooldown > 0) {

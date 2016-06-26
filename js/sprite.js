@@ -1,3 +1,5 @@
+"use strict";
+
 class Sprite {
 	constructor(imgsrc, x, y) {
 		this.image = new Image();

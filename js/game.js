@@ -22,6 +22,9 @@ class Game {
 		window.onkeydown = this.keyDown.bind(this);
 		window.onkeyup = this.keyUp.bind(this);
 
+		// Create player
+		this.entities.player = new Ship("sprites/ship.png", 100, 100, 3);
+
 		// Begin game loop
 		this.main();
 	}

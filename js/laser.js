@@ -1,3 +1,5 @@
+"use strict";
+
 class Laser {
 	constructor(x, y, angle, speed) {
 		this.inUse = function() {

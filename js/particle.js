@@ -1,3 +1,5 @@
+"use strict";
+
 class Particle {
 	constructor(x, y, size, color, angle, speed) {
 		this.inUse = function() {

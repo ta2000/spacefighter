@@ -1,7 +1,17 @@
+"use strict";
+
 class LaserPool {
 	constructor() {
 		this.poolSize = 20;
 		this.lasers = [];
+		this.initialized = false;
+	}
+
+	init() {
+		for (var i=0; i<this.poolSize; i++) {
+			this.lasers[i] = new Laser(-1,-1,-1,-1);
+			this.initialized = true;
+		}
 	}
 
 	create(x, y, angle, speed) {
@@ -25,11 +35,10 @@ class LaserPool {
 	}
 
 	update(modifier) {
+		if (!this.initialized) {
+			this.init();
+		}
 		for (var i=0; i<this.poolSize; i++) {
-			if (this.lasers[i] == undefined)
-			{
-				this.lasers[i] = new Laser(-1,-1,-1,-1);
-			}
 			if (this.lasers[i].inUse()) {
 				this.lasers[i].update(modifier);
 			}
