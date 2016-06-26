@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Space</title>
+	<!-- JAVASCRIPT LINKS -->
+	<script type="text/javascript" src="js/game.js"></script>
+	<script type="text/javascript" src="js/sprite.js"></script>
+	<script type="text/javascript" src="js/ship.js"></script>
+	<script type="text/javascript" src="js/laser.js"></script>
+	<script type="text/javascript" src="js/laserpool.js"></script>
+	<script type="text/javascript" src="js/particle.js"></script>
+	<script type="text/javascript" src="js/particlepool.js"></script>
+	<!-- CSS LINK -->
+	<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+	<h2 id="start">Start</h2>
+	<script>
+		var game = new Game();
+
+		var startBtn = document.getElementById("start");
+		startBtn.addEventListener("click", startGame);
+
+		function startGame() {
+			while (document.body.firstChild)
+			{
+				document.body.removeChild(document.body.firstChild);
+			}
+			game.start();
+		}
+	</script>
+</body>
+</html>
