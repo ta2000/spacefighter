@@ -36,7 +36,7 @@ class Ship extends Sprite {
 			if (ships[i] != this && ships[i].laserpool.initialized) {
 				for (var j=0; j<ships[i].laserpool.poolSize; j++) {
 					if (
-						ships[i].laserpool.lasers[i].inUse() &&
+						ships[i].laserpool.lasers[j].inUse() &&
 						this.distance(ships[i].laserpool.lasers[j]) < 64
 					) {
 						this.hp -= 10;
