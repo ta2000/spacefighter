@@ -26,4 +26,8 @@ class Sprite {
 	update(modifier, keysPressed) {
 		this.x++;
 	}
+
+	distance(obj) {
+		return Math.hypot(this.x - obj.x, this.y - obj.y);
+	}
 }

@@ -9,9 +9,17 @@ class LaserPool {
 
 	init() {
 		for (var i=0; i<this.poolSize; i++) {
-			this.lasers[i] = new Laser(-1,-1,-1,-1);
+			this.lasers[i] = new Laser(-Infinity,-Infinity,0,0);
 			this.initialized = true;
 		}
+	}
+
+	anyInUse() {
+		for (var i=0; i<this.poolSize; i++) {
+			if (this.lasers[i].inUse())
+				return true;
+		}
+		return false;
 	}
 
 	create(x, y, angle, speed) {

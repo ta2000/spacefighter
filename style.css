@@ -6,3 +6,8 @@ body {
 canvas {
 	background-color: #000000;
 }
+
+.test-mode {
+	z-index: 99;
+	position: absolute;
+}

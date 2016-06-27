@@ -9,9 +9,17 @@ class ParticlePool {
 
 	init() {
 		for (var i=0; i<this.poolSize; i++) {
-			this.particles[i] = new Particle(-1,-1,-1,-1,-1,-1);
+			this.particles[i] = new Particle(-Infinity,-Infinity,0,0,0,0);
 			this.initialized = true;
 		}
+	}
+
+	anyInUse() {
+		for (var i=0; i<this.poolSize; i++) {
+			if (this.particles[i].inUse())
+				return true;
+		}
+		return false;
 	}
 
 	create(x, y, size, color, angle, speed) {

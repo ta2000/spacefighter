@@ -5,6 +5,7 @@ class Ship extends Sprite {
 		super(imgsrc, x, y);
 		this.xVel = 0;
 		this.yVel = 0;
+		this.hp = 100;
 		this.maxSpeed = 5;
 		this.acceleration = acceleration;
 		this.cooldown = 0;
@@ -18,13 +19,32 @@ class Ship extends Sprite {
 		// Particles
 		this.particlepool.draw(ctx);
 
+		ctx.font = "30px Arial";
+		ctx.fillStyle = "#00FF00";
+		ctx.fillText("HP: " + this.hp, this.x-15, this.y-15);
+
 		Sprite.prototype.draw.call(this, ctx);
 	}
 
-	update(modifier, keysPressed) {
+	update(modifier, ships, keysPressed) {
 		// Lasers
 		this.laserpool.update(modifier);
 		this.particlepool.update(modifier);
+	
+		// Check for laser hit
+		for (var i=0; i<ships.length; i++) {
+			if (ships[i] != this && ships[i].laserpool.initialized) {
+				for (var j=0; j<ships[i].laserpool.poolSize; j++) {
+					if (
+						ships[i].laserpool.lasers[i].inUse() &&
+						this.distance(ships[i].laserpool.lasers[j]) < 64
+					) {
+						this.hp -= 10;
+						ships[i].laserpool.lasers[j].remove();
+					}
+				}
+			}
+		}
 
 		// Prevent going over maxSpeed
 		// in either direction
@@ -54,6 +74,14 @@ class Ship extends Sprite {
 		// A - Rotate left
 		else if (65 in keysPressed) {
 			this.angle -= 2 * Math.PI/180;
+		}
+		// Q - Move left
+		if (81 in keysPressed) {
+			
+		}
+		// E - Move right
+		else if (69 in keysPressed) {
+
 		}
 		// W - Forward
 		if (87 in keysPressed) {

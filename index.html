@@ -6,6 +6,8 @@
 	<script type="text/javascript" src="js/game.js"></script>
 	<script type="text/javascript" src="js/sprite.js"></script>
 	<script type="text/javascript" src="js/ship.js"></script>
+	<script type="text/javascript" src="js/player.js"></script>
+	<script type="text/javascript" src="js/shipai.js"></script>
 	<script type="text/javascript" src="js/laser.js"></script>
 	<script type="text/javascript" src="js/laserpool.js"></script>
 	<script type="text/javascript" src="js/particle.js"></script>
@@ -14,7 +16,15 @@
 	<link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
-	<h2 id="start">Start</h2>
+	<h1 id="start">Start</h1>
+	<h3>Controls:</h3>
+	<ul>
+		<li>W - Accelerate</i>
+		<li>S - Decelerate</i>
+		<li>A - Rotate Left</i>
+		<li>D - Rotate Right</i>
+		<li>SPACE - Fire Laser</i>
+	</ul>
 	<script>
 		var game = new Game();
 
@@ -26,7 +36,19 @@
 			{
 				document.body.removeChild(document.body.firstChild);
 			}
+			
+			// Button to create AI ships during game
+			var createShipBtn = document.createElement('button');
+			createShipBtn.innerHTML = "Create ship";
+			createShipBtn.setAttribute("class", "test-mode");
+			createShipBtn.addEventListener("click", createShip);
+			document.body.appendChild(createShipBtn);
+
 			game.start();
+		}
+
+		function createShip() {
+			game.ships.push(new ShipAI("sprites/ship.png", 300, 300, 4));
 		}
 	</script>
 </body>

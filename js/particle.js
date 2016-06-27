@@ -38,4 +38,10 @@ class Particle {
 			this.opacity = 1;
 		}
 	}
+
+	remove() {
+		this.x = -Infinity;
+		this.y = -Infinity;
+		this.speed = 0;
+	}
 }

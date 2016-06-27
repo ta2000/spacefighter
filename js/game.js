@@ -5,7 +5,7 @@ class Game {
 		this.canvas;
 		this.then;
 		this.keysPressed;
-		this.entities = {};
+		this.ships = [];
 	}
 
 	start() {
@@ -23,7 +23,10 @@ class Game {
 		window.onkeyup = this.keyUp.bind(this);
 
 		// Create player
-		this.entities.player = new Ship("sprites/ship.png", 100, 100, 3);
+		this.ships.push(new Player("sprites/ship.png", 100, 100, 4));
+
+		// Create an enemy
+		this.ships.push(new ShipAI("sprites/ship.png", 250, 120, 2));
 
 		// Begin game loop
 		this.main();
@@ -50,15 +53,38 @@ class Game {
 	}
 
 	update(modifier) {
-		for (var i in this.entities) {
-			this.entities[i].update(modifier, this.keysPressed)
+		// Remove dead ships once all particles are cleared
+		this.ships = this.ships.filter(function(ship) {
+			if (ship.hp > 0) {
+				return true;
+			} else {
+				if (ship.laserpool.anyInUse())
+					return true;
+				else if (ship.particlepool.anyInUse())
+					return true;
+			}
+			return false;
+		});
+		for (var i=0; i<this.ships.length; i++) {
+			if (this.ships[i].hp > 0) {
+				this.ships[i].update(modifier, this.ships, this.keysPressed)
+			} else {
+				// Only update particles once ship is dead
+				this.ships[i].laserpool.update(modifier);
+				this.ships[i].particlepool.update(modifier);
+			}
 		}
 	}
 
 	draw() {
 		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-		for (var i in this.entities) {
-			this.entities[i].draw(this.ctx);
+		for (var i=0; i<this.ships.length; i++) {
+			if (this.ships[i].hp > 0) {
+				this.ships[i].draw(this.ctx);
+			} else {
+				this.ships[i].laserpool.draw(this.ctx);
+				this.ships[i].particlepool.draw(this.ctx);
+			}
 		}
 	}
 }

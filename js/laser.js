@@ -27,4 +27,10 @@ class Laser {
 		this.x += Math.cos(this.angle)*this.speed*modifier; 
 		this.y += Math.sin(this.angle)*this.speed*modifier; 
 	}
+
+	remove() {
+		this.x = -Infinity;
+		this.y = -Infinity;
+		this.speed = 0;
+	}
 }
