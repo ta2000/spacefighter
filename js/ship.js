@@ -77,11 +77,33 @@ class Ship extends Sprite {
 		}
 		// Q - Move left
 		if (81 in keysPressed) {
-			
+			this.xVel += Math.cos(this.angle - Math.PI/2)*this.acceleration*modifier; 
+			this.yVel += Math.sin(this.angle - Math.PI/2)*this.acceleration*modifier; 
+			// RCS Particles
+			if (Math.random() > 0.60) {
+				this.particlepool.create(
+					this.x + this.image.width/2,
+					this.y + this.image.height/2,
+					4, "#DDDDDD",
+					this.angle + Math.PI/2 + Math.random()/2 - 0.2,
+					250
+				);
+			}
 		}
 		// E - Move right
 		else if (69 in keysPressed) {
-
+			this.xVel += Math.cos(this.angle + Math.PI/2)*this.acceleration*modifier; 
+			this.yVel += Math.sin(this.angle + Math.PI/2)*this.acceleration*modifier; 
+			// RCS Particles
+			if (Math.random() > 0.60) {
+				this.particlepool.create(
+					this.x + this.image.width/2,
+					this.y + this.image.height/2,
+					4, "#DDDDDD",
+					this.angle - Math.PI/2 + Math.random()/2 - 0.2,
+					250
+				);
+			}
 		}
 		// W - Forward
 		if (87 in keysPressed) {
