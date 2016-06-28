@@ -6,6 +6,7 @@ class Ship extends Sprite {
 		this.xVel = 0;
 		this.yVel = 0;
 		this.hp = 100;
+		this.score = 0;
 		this.attacker = null;
 		this.maxSpeed = 5;
 		this.acceleration = acceleration;
@@ -20,9 +21,10 @@ class Ship extends Sprite {
 		// Particles
 		this.particlepool.draw(ctx);
 
-		ctx.font = "30px Arial";
+		ctx.font = "24px Arial";
 		ctx.fillStyle = "#00FF00";
-		ctx.fillText("HP: " + this.hp, this.x-15, this.y-15);
+		ctx.fillText("HP: " + this.hp, this.x-12, this.y-30);
+		ctx.fillText("SCORE: " + this.score, this.x-24, this.y-12);
 
 		Sprite.prototype.draw.call(this, ctx);
 	}
@@ -43,11 +45,19 @@ class Ship extends Sprite {
 				for (var j=0; j<ships[i].laserpool.poolSize; j++) {
 					if (
 						ships[i].laserpool.lasers[j].inUse() &&
-						this.distance(ships[i].laserpool.lasers[j]) < 64
+						this.distanceToPoint(
+							ships[i].laserpool.lasers[j].x,
+							ships[i].laserpool.lasers[j].y
+						) < 64
 					) {
 						this.hp -= Math.floor(Math.random()*2)+3;
 						this.attacker = ships[i];
 						ships[i].laserpool.lasers[j].remove();
+						
+						// If killed add to killer's score
+						if (this.hp <= 0) {
+							ships[i].score++;
+						}
 					}
 				}
 			}

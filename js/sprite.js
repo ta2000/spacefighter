@@ -24,10 +24,22 @@ class Sprite {
 	}
 
 	update(modifier, keysPressed) {
-		this.x++;
 	}
 
 	distance(obj) {
-		return Math.hypot(this.x - obj.x, this.y - obj.y);
+		if (!this.imageLoaded || !obj.imageLoaded)
+			return Infinity;
+
+		return Math.hypot(
+			(this.x + this.image.width) - (obj.x + obj.image.width),
+			(this.y + this.image.height) - (obj.y + obj.image.height)
+		);
+	}
+
+	distanceToPoint(x, y) {
+		return Math.hypot(
+			(this.x + this.image.width) - (x + this.image.width),
+			(this.y + this.image.height) - (y + this.image.height)
+		);
 	}
 }
