@@ -4,7 +4,7 @@ class ShipAI extends Ship {
 	constructor(imgsrc, x, y, acceleration) {
 		super(imgsrc, x, y, acceleration);
 		this.target = null;
-		this.exploreSpeed = 2;
+		this.targetAngle = 0;
 	}
 
 	draw(ctx) {
