@@ -6,6 +6,7 @@ class Ship extends Sprite {
 		this.xVel = 0;
 		this.yVel = 0;
 		this.hp = 100;
+		this.attacker = null;
 		this.maxSpeed = 5;
 		this.acceleration = acceleration;
 		this.cooldown = 0;
@@ -31,6 +32,11 @@ class Ship extends Sprite {
 		this.laserpool.update(modifier);
 		this.particlepool.update(modifier);
 	
+		// Attacker dead
+		if (this.attacker != null && this.attacker.hp <= 0) {
+			this.attacker = null;
+		}
+
 		// Check for laser hit
 		for (var i=0; i<ships.length; i++) {
 			if (ships[i] != this && ships[i].laserpool.initialized) {
@@ -39,7 +45,8 @@ class Ship extends Sprite {
 						ships[i].laserpool.lasers[j].inUse() &&
 						this.distance(ships[i].laserpool.lasers[j]) < 64
 					) {
-						this.hp -= 10;
+						this.hp -= Math.floor(Math.random()*2)+3;
+						this.attacker = ships[i];
 						ships[i].laserpool.lasers[j].remove();
 					}
 				}

@@ -25,9 +25,6 @@ class Game {
 		// Create player
 		this.ships.push(new Player("sprites/ship.png", 100, 100, 4));
 
-		// Create an enemy
-		this.ships.push(new ShipAI("sprites/ship.png", 250, 120, 2));
-
 		// Begin game loop
 		this.main();
 	}

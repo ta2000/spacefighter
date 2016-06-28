@@ -3,12 +3,27 @@
 class ShipAI extends Ship {
 	constructor(imgsrc, x, y, acceleration) {
 		super(imgsrc, x, y, acceleration);
-		this.target = {};
+		this.target = null;
 		this.exploreSpeed = 2;
 	}
 
 	draw(ctx) {
 		Ship.prototype.draw.call(this, ctx);
+
+		if (this.target != null) {
+			ctx.lineWidth = 5;
+			ctx.strokeStyle = "cyan";
+			ctx.beginPath();
+			ctx.moveTo(
+				this.x + this.image.width/2,
+				this.y + this.image.height/2
+			);
+			ctx.lineTo(
+				this.target.x + this.target.image.width/2,
+				this.target.y + this.target.image.height/2
+			);	
+			ctx.stroke();
+		}
 	}
 
 	update(modifier, ships) {
@@ -17,28 +32,38 @@ class ShipAI extends Ship {
 
 	evaluate(ships) {
 		var keys = {};
-
-		// Stop targetting
-		if (this.target.hp < 1) {
-			this.target = {};
-		}
-		// Find new target
-		for (var i in ships) {
-			if (ships[i] != this &&
-				ships[i].hp >0 &&
-				this.distance(ships[i]) < 1000
-			) {
-				this.target = ships[i];
-				this.targetAngle = Math.atan2(this.y - ships[i].y, this.x - ships[i].x);
-			}
-		}
-
 		var delta = this.targetAngle - this.angle;
 
+		// Target attacker if being attacked
+		if (this.attacker != null) {
+			this.target = this.attacker;
+		}
+
+		// If not targetting anything
+		if (this.target == null) {
+			// Wander aimlessly
+			if (Math.random() > 0.6) {
+				keys[87] = true;
+			}
+			if (Math.random() > 0.98) {
+				this.targetAngle += Math.random()*3 - 1.5;
+			}
+			// Find new target
+			for (var i in ships) {
+				if (ships[i] != this &&
+					ships[i].hp >0 &&
+					this.distance(ships[i]) < 1000
+				) {
+					this.target = ships[i];
+				}
+			}
+		}
 		// If targetting a ship
-		if (Object.keys(this.target).length != 0) {
+		else {
+			// Adjust targetAngle towards target
+			this.targetAngle = Math.atan2(this.y - this.target.y, this.x - this.target.x);
 			// Attack ship
-			if (delta < 4 && delta > 3) {
+			if (Math.round(this.toDegrees(delta)) == 180) {
 				if (Math.random() > 0.8) {
 					keys[32] = true;
 				}
@@ -50,26 +75,35 @@ class ShipAI extends Ship {
 			else {
 				keys[83] = true;
 			}
-		}
-		// If not targetting anything
-		else {
-			if (Math.random() > 0.6) {
-				keys[87] = true;
-			}
-			if (Math.random() > 0.98) {
-				this.targetAngle += Math.random()*3 - 1.5;
+			// Stop targetting
+			if (this.target.hp <= 0) {
+				this.target = null;
 			}
 		}
 
 		// Rotate towards target angle
-		if (delta <= Math.PI) {
+		delta = this.toDegrees(delta);
+		if (delta <= 180) {
 			keys[65] = true;
 		}
 		else {
 			keys[68] = true;
-		}
-	
+		}	
 
 		return keys;
+	}
+
+	toDegrees(num) {
+		var degrees = num*180/Math.PI;
+		if (degrees >= 0) {
+			var tempAngle = degrees % 360;
+			if (tempAngle == 360) {
+				return 0;
+			} else {
+				return tempAngle;
+			}
+		} else {
+			return (360 - (-1 * degrees) % 360);
+		}
 	}
 }
