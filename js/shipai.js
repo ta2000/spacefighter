@@ -9,21 +9,6 @@ class ShipAI extends Ship {
 
 	draw(ctx) {
 		Ship.prototype.draw.call(this, ctx);
-
-		if (this.target != null) {
-			ctx.lineWidth = 5;
-			ctx.strokeStyle = "cyan";
-			ctx.beginPath();
-			ctx.moveTo(
-				this.x + this.image.width/2,
-				this.y + this.image.height/2
-			);
-			ctx.lineTo(
-				this.target.x + this.target.image.width/2,
-				this.target.y + this.target.image.height/2
-			);	
-			ctx.stroke();
-		}
 	}
 
 	update(modifier, ships) {

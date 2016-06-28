@@ -151,7 +151,7 @@ class Ship extends Sprite {
 				this.x+this.image.width/2,
 				this.y+this.image.height/2,
 				this.angle,
-				this.acceleration+500
+				this.acceleration+700
 			);
 			this.cooldown = 20;
 		} else if (this.cooldown > 0) {
