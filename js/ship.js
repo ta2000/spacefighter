@@ -1,15 +1,16 @@
 "use strict";
 
 class Ship extends Sprite {
-	constructor(imgsrc, x, y, acceleration) {
+	constructor(imgsrc, x, y, team) {
 		super(imgsrc, x, y);
 		this.xVel = 0;
 		this.yVel = 0;
+		this.team = team;
 		this.hp = 100;
 		this.score = 0;
 		this.attacker = null;
 		this.maxSpeed = 5;
-		this.acceleration = acceleration;
+		this.acceleration = 4;
 		this.cooldown = 0;
 		this.laserpool = new LaserPool;
 		this.particlepool = new ParticlePool;
@@ -20,9 +21,30 @@ class Ship extends Sprite {
 		this.laserpool.draw(ctx);
 		// Particles
 		this.particlepool.draw(ctx);
+		
+		var colors = ["rgba(255,0,0,0.2)", "rgba(0,255,0,0.2)", "rgba(0,0,255,0.2)"];
+
+		ctx.globalAlpha = 0.5;
+		ctx.lineWidth = 5;
+		ctx.strokeStyle = colors[this.team];
+		for (var i=0; i<game.ships.length; i++) {
+			if (game.ships[i].team == this.team) {
+				ctx.beginPath();
+				ctx.moveTo(
+					this.x + this.image.width/2,
+					this.y + this.image.height/2
+				);
+				ctx.lineTo(
+					game.ships[i].x + this.image.width/2,
+					game.ships[i].y + this.image.height/2
+				);
+				ctx.stroke();
+			}
+		}
+		ctx.globalAlpha = 1;
 
 		ctx.font = "24px Arial";
-		ctx.fillStyle = "#00FF00";
+		ctx.fillStyle = "#FFFFFF";
 		ctx.fillText("HP: " + this.hp, this.x-12, this.y-30);
 		ctx.fillText("SCORE: " + this.score, this.x-24, this.y-12);
 
@@ -41,7 +63,11 @@ class Ship extends Sprite {
 
 		// Check for laser hit
 		for (var i=0; i<ships.length; i++) {
-			if (ships[i] != this && ships[i].laserpool.initialized) {
+			if (
+				ships[i] != this &&
+				ships[i].team != this.team &&
+				ships[i].laserpool.initialized
+			) {
 				for (var j=0; j<ships[i].laserpool.poolSize; j++) {
 					if (
 						ships[i].laserpool.lasers[j].inUse() &&

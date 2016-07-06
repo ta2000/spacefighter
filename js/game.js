@@ -23,7 +23,7 @@ class Game {
 		window.onkeyup = this.keyUp.bind(this);
 
 		// Create player
-		this.ships.push(new Player("sprites/ship.png", 100, 100, 4));
+		this.ships.push(new Player("sprites/ship.png", 100, 100, 0));
 
 		// Begin game loop
 		this.main();

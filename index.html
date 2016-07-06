@@ -50,7 +50,13 @@
 		}
 
 		function createShip() {
-			game.ships.push(new ShipAI("sprites/ship.png", 300, 300, 4));
+			game.ships.push(
+				new ShipAI(
+					"sprites/ship.png",
+					300, 300,
+					Math.floor(Math.random()*3)
+				)
+			);
 		}
 	</script>
 </body>

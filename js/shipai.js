@@ -36,7 +36,8 @@ class ShipAI extends Ship {
 			// Find new target
 			for (var i in ships) {
 				if (ships[i] != this &&
-					ships[i].hp >0 &&
+					ships[i].team != this.team &&
+					ships[i].hp > 0 &&
 					this.distance(ships[i]) < 1000
 				) {
 					this.target = ships[i];
