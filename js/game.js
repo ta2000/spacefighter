@@ -6,6 +6,15 @@ class Game {
 		this.then;
 		this.keysPressed;
 		this.ships = [];
+		this.camera = {
+			x: 0,
+			y: 0
+		};
+		this.world = {
+			width: 4000,
+			height:2000
+		};
+		this.player;
 	}
 
 	start() {
@@ -15,7 +24,7 @@ class Game {
 		document.body.appendChild(this.canvas);
 
 		this.ctx = this.canvas.getContext('2d');
-		
+
 		this.then = Date.now();
 
 		this.keysPressed = {};
@@ -23,7 +32,8 @@ class Game {
 		window.onkeyup = this.keyUp.bind(this);
 
 		// Create player
-		this.ships.push(new Player("sprites/ship.png", 100, 100, 4));
+		this.player = new Player("sprites/ship.png", 100, 100, 4);
+		this.ships.push(this.player);
 
 		// Begin game loop
 		this.main();
@@ -74,7 +84,19 @@ class Game {
 	}
 
 	draw() {
+        this.ctx.setTransform(1,0,0,1,0,0);
 		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+		// Center camera on player
+		this.camera.x = (-this.player.x + this.canvas.width/2);
+		this.camera.y = (-this.player.y + this.canvas.height/2);
+
+		// Clamp to world boundary
+		this.camera.x = clamp(this.camera.x, 0, this.world.width - this.canvas.width);
+		this.camera.y = clamp(this.camera.y, 0, this.world.height - this.canvas.height);
+
+		this.ctx.translate(this.camera.x, this.camera.y);
+
 		for (var i=0; i<this.ships.length; i++) {
 			if (this.ships[i].hp > 0) {
 				this.ships[i].draw(this.ctx);
@@ -84,4 +106,13 @@ class Game {
 			}
 		}
 	}
+}
+
+function clamp(num, min, max) {
+	if (num > min)
+		return min;
+	else if (num < -max)
+		return -max;
+
+	return num;
 }

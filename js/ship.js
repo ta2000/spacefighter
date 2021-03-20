@@ -33,7 +33,7 @@ class Ship extends Sprite {
 		// Lasers
 		this.laserpool.update(modifier);
 		this.particlepool.update(modifier);
-	
+
 		// Attacker dead
 		if (this.attacker != null && this.attacker.hp <= 0) {
 			this.attacker = null;
@@ -53,7 +53,7 @@ class Ship extends Sprite {
 						this.hp -= Math.floor(Math.random()*2)+3;
 						this.attacker = ships[i];
 						ships[i].laserpool.lasers[j].remove();
-						
+
 						// If killed add to killer's score
 						if (this.hp <= 0) {
 							ships[i].score++;
@@ -81,8 +81,8 @@ class Ship extends Sprite {
 			this.yVel = -this.yVel;
 
 		// Movement
-		this.x += this.xVel; 
-		this.y += this.yVel; 
+		this.x += this.xVel;
+		this.y += this.yVel;
 
 		// D - Rotate right
 		if (68 in keysPressed) {
@@ -94,8 +94,8 @@ class Ship extends Sprite {
 		}
 		// Q - Move left
 		if (81 in keysPressed) {
-			this.xVel += Math.cos(this.angle - Math.PI/2)*this.acceleration*modifier; 
-			this.yVel += Math.sin(this.angle - Math.PI/2)*this.acceleration*modifier; 
+			this.xVel += Math.cos(this.angle - Math.PI/2)*this.acceleration*modifier;
+			this.yVel += Math.sin(this.angle - Math.PI/2)*this.acceleration*modifier;
 			// RCS Particles
 			if (Math.random() > 0.60) {
 				this.particlepool.create(
@@ -109,8 +109,8 @@ class Ship extends Sprite {
 		}
 		// E - Move right
 		else if (69 in keysPressed) {
-			this.xVel += Math.cos(this.angle + Math.PI/2)*this.acceleration*modifier; 
-			this.yVel += Math.sin(this.angle + Math.PI/2)*this.acceleration*modifier; 
+			this.xVel += Math.cos(this.angle + Math.PI/2)*this.acceleration*modifier;
+			this.yVel += Math.sin(this.angle + Math.PI/2)*this.acceleration*modifier;
 			// RCS Particles
 			if (Math.random() > 0.60) {
 				this.particlepool.create(
@@ -125,8 +125,8 @@ class Ship extends Sprite {
 		// W - Forward
 		if (87 in keysPressed) {
 			// Change velocity
-			this.xVel += Math.cos(this.angle)*this.acceleration*modifier; 
-			this.yVel += Math.sin(this.angle)*this.acceleration*modifier; 
+			this.xVel += Math.cos(this.angle)*this.acceleration*modifier;
+			this.yVel += Math.sin(this.angle)*this.acceleration*modifier;
 			// Engine particles (based on acceleration)
 			if (Math.random() > (0.80 - this.acceleration/1000)) {
 				this.particlepool.create(
@@ -141,8 +141,8 @@ class Ship extends Sprite {
 		// S - Reverse
 		else if (83 in keysPressed) {
 			// Change velocity
-			this.xVel -= Math.cos(this.angle)*this.acceleration*modifier; 
-			this.yVel -= Math.sin(this.angle)*this.acceleration*modifier; 
+			this.xVel -= Math.cos(this.angle)*this.acceleration*modifier;
+			this.yVel -= Math.sin(this.angle)*this.acceleration*modifier;
 			// RCS Particles
 			if (Math.random() > 0.60) {
 				this.particlepool.create(
