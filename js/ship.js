@@ -5,22 +5,18 @@ class Ship extends Sprite {
 		super(imgsrc, x, y);
 		this.xVel = 0;
 		this.yVel = 0;
+		this.velocity;
 		this.hp = 100;
 		this.score = 0;
 		this.attacker = null;
-		this.maxSpeed = 5;
+		this.maxSpeed = 1000;
 		this.acceleration = acceleration;
 		this.cooldown = 0;
-		this.laserpool = new LaserPool;
-		this.particlepool = new ParticlePool;
+		this.laserpool = game.laserpool;
+		this.particlepool = game.particlepool;
 	}
 
 	draw(ctx) {
-		// Lasers
-		this.laserpool.draw(ctx);
-		// Particles
-		this.particlepool.draw(ctx);
-
 		ctx.font = "24px Arial";
 		ctx.fillStyle = "#00FF00";
 		ctx.fillText("HP: " + this.hp, this.x-12, this.y-30);
@@ -29,35 +25,26 @@ class Ship extends Sprite {
 		Sprite.prototype.draw.call(this, ctx);
 	}
 
-	update(modifier, ships, keysPressed) {
-		// Lasers
-		this.laserpool.update(modifier);
-		this.particlepool.update(modifier);
-
+	update(modifier, game, keysPressed) {
+		this.velocity = Math.sqrt(this.xVel*this.xVel + this.yVel*this.yVel);
+		
 		// Attacker dead
 		if (this.attacker != null && this.attacker.hp <= 0) {
 			this.attacker = null;
 		}
 
 		// Check for laser hit
-		for (var i=0; i<ships.length; i++) {
-			if (ships[i] != this && ships[i].laserpool.initialized) {
-				for (var j=0; j<ships[i].laserpool.poolSize; j++) {
-					if (
-						ships[i].laserpool.lasers[j].inUse() &&
-						this.distanceToPoint(
-							ships[i].laserpool.lasers[j].x,
-							ships[i].laserpool.lasers[j].y
-						) < 64
-					) {
-						this.hp -= Math.floor(Math.random()*2)+3;
-						this.attacker = ships[i];
-						ships[i].laserpool.lasers[j].remove();
+		for (const laser of game.laserpool.lasers) {
+			if (laser.inUse() && laser.creator != this) {
+				console.log(this, laser.creator);
+				if (this.distanceToPoint(laser.x, laser.y) < 64) {
+					this.hp -= Math.floor(Math.random()*2)+3;
+					this.attacker = laser.creator;
+					laser.energy = 0;
 
-						// If killed add to killer's score
-						if (this.hp <= 0) {
-							ships[i].score++;
-						}
+					// If killed add to killer's score
+					if (this.hp <= 0) {
+						laser.creator.score++;
 					}
 				}
 			}
@@ -75,14 +62,14 @@ class Ship extends Sprite {
 			this.yVel = -this.maxSpeed;
 
 		// Bounce off screen border (temporary)
-		if (this.x + this.image.width >= window.innerWidth || this.x <= 0)
+		if (this.x + this.image.width >= game.world.width || this.x <= 0)
 			this.xVel = -this.xVel;
-		if (this.y + this.image.height >= window.innerHeight || this.y <= 0)
+		if (this.y + this.image.height >= game.world.height || this.y <= 0)
 			this.yVel = -this.yVel;
 
 		// Movement
-		this.x += this.xVel;
-		this.y += this.yVel;
+		this.x += this.xVel * modifier;
+		this.y += this.yVel * modifier;
 
 		// D - Rotate right
 		if (68 in keysPressed) {
@@ -94,8 +81,8 @@ class Ship extends Sprite {
 		}
 		// Q - Move left
 		if (81 in keysPressed) {
-			this.xVel += Math.cos(this.angle - Math.PI/2)*this.acceleration*modifier;
-			this.yVel += Math.sin(this.angle - Math.PI/2)*this.acceleration*modifier;
+			this.xVel += Math.cos(this.angle - Math.PI/2)*this.acceleration;
+			this.yVel += Math.sin(this.angle - Math.PI/2)*this.acceleration;
 			// RCS Particles
 			if (Math.random() > 0.60) {
 				this.particlepool.create(
@@ -109,8 +96,8 @@ class Ship extends Sprite {
 		}
 		// E - Move right
 		else if (69 in keysPressed) {
-			this.xVel += Math.cos(this.angle + Math.PI/2)*this.acceleration*modifier;
-			this.yVel += Math.sin(this.angle + Math.PI/2)*this.acceleration*modifier;
+			this.xVel += Math.cos(this.angle + Math.PI/2)*this.acceleration;
+			this.yVel += Math.sin(this.angle + Math.PI/2)*this.acceleration;
 			// RCS Particles
 			if (Math.random() > 0.60) {
 				this.particlepool.create(
@@ -125,24 +112,24 @@ class Ship extends Sprite {
 		// W - Forward
 		if (87 in keysPressed) {
 			// Change velocity
-			this.xVel += Math.cos(this.angle)*this.acceleration*modifier;
-			this.yVel += Math.sin(this.angle)*this.acceleration*modifier;
+			this.xVel += Math.cos(this.angle)*this.acceleration;
+			this.yVel += Math.sin(this.angle)*this.acceleration;
 			// Engine particles (based on acceleration)
-			if (Math.random() > (0.80 - this.acceleration/1000)) {
+			if (Math.random() > 0.7) {
 				this.particlepool.create(
 					this.x + this.image.width/2,
 					this.y + this.image.height/2,
-					8, "#FF8000",
+					8, this.particlepool.getRandomColor(15, 30, 70, 90, 35, 50),
 					this.angle - 3.14 + Math.random()-0.4,
-					120
+					150
 				);
 			}
 		}
 		// S - Reverse
 		else if (83 in keysPressed) {
 			// Change velocity
-			this.xVel -= Math.cos(this.angle)*this.acceleration*modifier;
-			this.yVel -= Math.sin(this.angle)*this.acceleration*modifier;
+			this.xVel -= Math.cos(this.angle)*this.acceleration;
+			this.yVel -= Math.sin(this.angle)*this.acceleration;
 			// RCS Particles
 			if (Math.random() > 0.60) {
 				this.particlepool.create(
@@ -154,6 +141,22 @@ class Ship extends Sprite {
 				);
 			}
 		}
+		// CTRL - Dampers
+		else if (17 in keysPressed) {
+			// Change velocity
+			this.xVel *= 0.96;
+			this.yVel *= 0.96;
+			// RCS Particles
+			if (Math.random() > 0.60 && this.velocity > 2) {
+				this.particlepool.create(
+					this.x + this.image.width/2,
+					this.y + this.image.height/2,
+					4, "#DDDDDD",
+					Math.atan(this.yVel/this.xVel) + Math.random()/4 - 0.1,
+					400, 0.3
+				);
+			}
+		}
 
 		// Firing
 		if (32 in keysPressed && this.cooldown == 0) {
@@ -161,9 +164,10 @@ class Ship extends Sprite {
 				this.x+this.image.width/2,
 				this.y+this.image.height/2,
 				this.angle,
-				this.acceleration+700
+				this.velocity + 1000,
+				this
 			);
-			this.cooldown = 20;
+			this.cooldown = 8;
 		} else if (this.cooldown > 0) {
 			this.cooldown--;
 		}

@@ -22,13 +22,15 @@ class LaserPool {
 		return false;
 	}
 
-	create(x, y, angle, speed) {
+	create(x, y, angle, speed, creator) {
 		for (var i=0; i<this.poolSize; i++) {
 			if (!this.lasers[i].inUse()) {
 				this.lasers[i].x = x;
 				this.lasers[i].y = y;
 				this.lasers[i].angle = angle;
 				this.lasers[i].speed = speed;
+				this.lasers[i].creator = creator;
+				this.lasers[i].energy = 1.6;
 				return;
 			}
 		}

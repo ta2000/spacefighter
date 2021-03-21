@@ -11,8 +11,8 @@ class ShipAI extends Ship {
 		Ship.prototype.draw.call(this, ctx);
 	}
 
-	update(modifier, ships) {
-		Ship.prototype.update.call(this, modifier, ships, this.evaluate(ships));
+	update(modifier, game) {
+		Ship.prototype.update.call(this, modifier, game, this.evaluate(game.ships));
 	}
 
 	evaluate(ships) {

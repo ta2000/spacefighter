@@ -3,10 +3,7 @@
 class Particle {
 	constructor(x, y, size, color, angle, speed) {
 		this.inUse = function() {
-			return (this.x < window.innerWidth &&
-					this.x > 0 &&
-					this.y < window.innerHeight &&
-					this.y > 0);
+			return this.opacity > 0;
 		}
 		this.x = x;
 		this.y = y;
@@ -14,7 +11,8 @@ class Particle {
 		this.color = color;
 		this.angle = angle;
 		this.speed = speed;
-		this.opacity = Math.random()+1;
+		this.opacity = 0;
+		this.lifespan = 1;
 	}
 
 	draw(ctx) {
@@ -31,17 +29,11 @@ class Particle {
 		this.x += Math.cos(this.angle)*this.speed*modifier; 
 		this.y += Math.sin(this.angle)*this.speed*modifier; 
 		this.speed -= 0.25;
-		this.opacity -= 0.01;
+		this.opacity -= 0.01 / this.lifespan;
 		if (this.opacity < 0.01) {
 			this.x = -1;
 			this.y = -1;
-			this.opacity = 1;
+			this.opacity = 0;
 		}
-	}
-
-	remove() {
-		this.x = -Infinity;
-		this.y = -Infinity;
-		this.speed = 0;
 	}
 }

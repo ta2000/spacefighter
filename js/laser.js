@@ -1,36 +1,33 @@
 "use strict";
 
 class Laser {
-	constructor(x, y, angle, speed) {
+	constructor() {
 		this.inUse = function() {
-			return (this.x < window.innerWidth &&
-					this.x > 0 &&
-					this.y < window.innerHeight &&
-					this.y > 0);
+			return this.energy > 0;
 		}
-		this.x = x;
-		this.y = y;
-		this.angle = angle;
-		this.speed = speed;
+		this.x;
+		this.y;
+		this.angle;
+		this.speed;
+		this.ship;
+		this.energy = 0;
+		this.particlepool = game.particlepool;
 	}
 
 	draw(ctx) {
+		ctx.globalAlpha = this.energy * 2;
 		ctx.strokeStyle = "#CC0000";
 		ctx.lineWidth = 4;
 		ctx.beginPath();
 		ctx.moveTo(this.x, this.y);
 		ctx.lineTo(this.x + Math.cos(this.angle)*30, this.y + Math.sin(this.angle)*30);
 		ctx.stroke();
+		ctx.globalAlpha = 1;
 	}
 
 	update(modifier) {
-		this.x += Math.cos(this.angle)*this.speed*modifier; 
-		this.y += Math.sin(this.angle)*this.speed*modifier; 
-	}
-
-	remove() {
-		this.x = -Infinity;
-		this.y = -Infinity;
-		this.speed = 0;
+		this.x += Math.cos(this.angle) * this.speed * modifier; 
+		this.y += Math.sin(this.angle) * this.speed * modifier;
+		this.energy -= (modifier * this.speed / 1000);
 	}
 }

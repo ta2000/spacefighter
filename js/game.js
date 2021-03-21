@@ -15,6 +15,8 @@ class Game {
 			height:2000
 		};
 		this.player;
+		this.laserpool = new LaserPool;
+		this.particlepool = new ParticlePool;
 	}
 
 	start() {
@@ -25,17 +27,17 @@ class Game {
 
 		this.ctx = this.canvas.getContext('2d');
 
-		this.then = Date.now();
-
 		this.keysPressed = {};
 		window.onkeydown = this.keyDown.bind(this);
 		window.onkeyup = this.keyUp.bind(this);
 
 		// Create player
-		this.player = new Player("sprites/ship.png", 100, 100, 4);
+		this.player = new Player("sprites/ship.png", 100, 100, 8);
 		this.ships.push(this.player);
+		console.log(this.particlepool);
 
 		// Begin game loop
+		this.then = Date.now();
 		this.main();
 	}
 
@@ -60,26 +62,19 @@ class Game {
 	}
 
 	update(modifier) {
+		this.laserpool.update(modifier);
+		this.particlepool.update(modifier);
+
 		// Remove dead ships once all particles are cleared
 		this.ships = this.ships.filter(function(ship) {
 			if (ship.hp > 0) {
 				return true;
-			} else {
-				if (ship.laserpool.anyInUse())
-					return true;
-				else if (ship.particlepool.anyInUse())
-					return true;
 			}
+
 			return false;
 		});
 		for (var i=0; i<this.ships.length; i++) {
-			if (this.ships[i].hp > 0) {
-				this.ships[i].update(modifier, this.ships, this.keysPressed)
-			} else {
-				// Only update particles once ship is dead
-				this.ships[i].laserpool.update(modifier);
-				this.ships[i].particlepool.update(modifier);
-			}
+			this.ships[i].update(modifier, this, this.keysPressed)
 		}
 	}
 
@@ -97,12 +92,12 @@ class Game {
 
 		this.ctx.translate(this.camera.x, this.camera.y);
 
+		this.laserpool.draw(this.ctx);
+		this.particlepool.draw(this.ctx);
+
 		for (var i=0; i<this.ships.length; i++) {
 			if (this.ships[i].hp > 0) {
 				this.ships[i].draw(this.ctx);
-			} else {
-				this.ships[i].laserpool.draw(this.ctx);
-				this.ships[i].particlepool.draw(this.ctx);
 			}
 		}
 	}
